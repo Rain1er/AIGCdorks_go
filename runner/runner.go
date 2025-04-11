@@ -33,6 +33,9 @@ var targetUrl []string // 目标url切片，等下去正则匹配里面的key
 var processedCount int
 var processedCountMutex sync.Mutex
 
+// 使用互斥锁确保文件写入的线程安全，必须要在全局定义
+var mu sync.Mutex
+
 func Exec() {
 	for _, dork := range Dorks {
 		token := getToken()
@@ -208,10 +211,9 @@ func processUrls(urls []string) {
 	}
 }
 
-// writeToFile 线程安全地将内容写入文件
+// writeToFile 线程安全地将内容写入文件，注意互斥锁要在外面定义
 func writeToFile(filename, content string) error {
-	// 使用互斥锁确保文件写入的线程安全
-	var mu sync.Mutex
+
 	mu.Lock()
 	defer mu.Unlock()
 
