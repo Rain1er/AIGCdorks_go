@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/Rain1er/github_search/runner"
+	"github.com/Rain1er/AIGCdorks_go/runner"
 )
 
 func main() {
