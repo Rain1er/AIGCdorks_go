@@ -50,11 +50,11 @@ func init() {
 
 func Exec() {
 	for _, dork := range Dorks {
-		token := getToken()
+		token := updateToken()
 		if Target != "" {
-			query(fmt.Sprintf("%s %s", Target, dork), token)
+			reqAndParse(fmt.Sprintf("%s %s", Target, dork), token)
 		} else {
-			query(dork, token) // no target ,only use dork
+			reqAndParse(dork, token) // no target ,only use dork
 		}
 	}
 
@@ -84,7 +84,7 @@ func Exec() {
 
 }
 
-func query(dork string, token string) {
+func reqAndParse(dork string, token string) {
 
 	for i := 1; i <= 10; i++ {
 		currentPage = i
@@ -95,7 +95,7 @@ func query(dork string, token string) {
 		// 上来就要判断上次的请求是否limit，如果是就换token
 		if status == 403 {
 			color.Red("[error] %s token is limited, change another token", token)
-			token = getToken()
+			token = updateToken()
 
 			color.Red("----------------now token sequence is change to %d----------------", TokenSeq)
 			i--        // 还是请求上次页号
@@ -107,7 +107,7 @@ func query(dork string, token string) {
 		uri, _ := url.Parse("https://api.github.com/search/code")
 
 		param := url.Values{}
-		param.Set("q", dork)
+		param.Set("q", dork+" language:ts")          // todo 增加各种语言分类，破解1000条结果限制
 		param.Set("per_page", strconv.Itoa(100))     // Integer to ASCII
 		param.Set("page", strconv.Itoa(currentPage)) // total_count / 100 ，max = 10
 		uri.RawQuery = param.Encode()

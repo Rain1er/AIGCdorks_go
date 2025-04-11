@@ -28,14 +28,6 @@ func Menu() {
 	flag.Int64Var(&Delay, "d", 10, "how many seconds does it wait each time")
 
 	flag.Usage = func() {
-		color.Green(`
- ____    __  __  __  __  ____  ___ 
-(  _ \  /. |(  \/  )/  )(_  _)/ __)
- )(_) )(_  _))    (  )(   )(  \__ \
-(____/   (_)(_/\/\_)(__) (__) (___/
-
-                       v 0.1
-`)
 		fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
 		flag.PrintDefaults()
 	}
@@ -90,7 +82,7 @@ func Parseparam() {
 /*
 多个token轮询，直到一个token达到限制之后，再切换下一个token。如此循环即可
 */
-func getToken() string {
+func updateToken() string {
 	token := Tokens[TokenSeq]
 	TokenSeq += 1
 	if len(Tokens) == TokenSeq {
