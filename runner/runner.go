@@ -33,8 +33,20 @@ var targetUrl []string // 目标url切片，等下去正则匹配里面的key
 var processedCount int
 var processedCountMutex sync.Mutex
 
-// 使用互斥锁确保文件写入的线程安全，必须要在全局定义
-var mu sync.Mutex
+// 新增：定义一个通道用于存储匹配结果
+var matchChan = make(chan string, 100) // 缓冲通道，容量为100
+
+// 类似于构造函数
+func init() {
+	// 新增：启动一个 goroutine 用于从通道中读取数据并写入文件
+	go func() {
+		for match := range matchChan {
+			if err := writeToFile("key", match); err != nil {
+				color.Red("write to file error: %v", err)
+			}
+		}
+	}()
+}
 
 func Exec() {
 	for _, dork := range Dorks {
@@ -47,7 +59,7 @@ func Exec() {
 	}
 
 	// 分片处理 URL
-	chunkSize := 10 // 每个 goroutine 处理的 URL 数量
+	chunkSize := 1 // 每个 goroutine 处理的 URL 数量
 	var wg sync.WaitGroup
 
 	for i := 0; i < len(targetUrl); i += chunkSize {
@@ -62,9 +74,11 @@ func Exec() {
 			defer wg.Done()
 			processUrls(urls)
 		}(urlChunk)
+
 	}
 
 	wg.Wait()
+
 	// 读取key.txt中对每一行，进行去重复
 	_ = removeDuplicatesFromFile("key")
 
@@ -202,10 +216,8 @@ func processUrls(urls []string) {
 			for match := range uniqueMatches {
 				color.Green("[+] get key: %s", match)
 
-				// 线程安全地写入文件
-				if err := writeToFile("key", match); err != nil {
-					color.Red("write to file error: %v", err)
-				}
+				// 修改：将匹配结果写入通道
+				matchChan <- match
 			}
 		}
 	}
@@ -213,10 +225,6 @@ func processUrls(urls []string) {
 
 // writeToFile 线程安全地将内容写入文件，注意互斥锁要在外面定义
 func writeToFile(filename, content string) error {
-
-	mu.Lock()
-	defer mu.Unlock()
-
 	// 打开文件（追加模式）
 	file, err := os.OpenFile(filename, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
