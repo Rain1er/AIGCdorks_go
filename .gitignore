@@ -14,7 +14,7 @@
 .idea
 
 # Dependency directories (remove the comment below to include it)
-tokenfile
+token
 
 # Go workspace file
 go.work
