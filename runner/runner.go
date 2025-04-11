@@ -7,7 +7,6 @@ import (
 	"io"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"time"
 )
@@ -23,6 +22,7 @@ type Items struct {
 // 响应数据处理
 var responseData Response
 var status int
+var currentPage int
 
 func Exec() {
 	for _, dork := range Dorks {
@@ -38,6 +38,7 @@ func Exec() {
 func query(dork string, token string) {
 
 	for i := 1; i <= 10; i++ {
+		currentPage = i
 		if i == responseData.TotalCount/100 {
 			break
 		}
@@ -71,7 +72,7 @@ func query(dork string, token string) {
 		}
 		resp, err := Client.Do(req)
 		if err != nil {
-			color.Red("GET faild")
+			color.Red("request failed")
 			break
 		}
 		// read the resp
@@ -88,10 +89,11 @@ func query(dork string, token string) {
 		if err != nil {
 			// handle potential errors during JSON parsing
 			color.Red("json parse error!")
-			os.Exit(0)
+			break
 		}
 		// Iterate through the items and print each html_url
 		for i, item := range responseData.Items {
+			color.Yellow("共%d页，当前页面：%d\n", responseData.TotalCount/100, currentPage)
 			fmt.Printf("%d: %s\n", i+1, item.HtmlUrl)
 		}
 	}
