@@ -19,7 +19,7 @@ var Delay int64
 // 所有token和dork
 var Tokens []string
 var Dorks []string
-var TokenSeq int
+var TokenSeq = 0
 
 func Menu() {
 	flag.StringVar(&TokenFile, "tf", "", "github personal access token file")
@@ -91,7 +91,6 @@ func Parseparam() {
 多个token轮询，直到一个token达到限制之后，再切换下一个token。如此循环即可
 */
 func getToken() string {
-	TokenSeq = 0
 	token := Tokens[TokenSeq]
 	TokenSeq += 1
 	if len(Tokens) == TokenSeq {

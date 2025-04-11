@@ -13,8 +13,9 @@
 *.out
 .idea
 
-# Dependency directories (remove the comment below to include it)
+# secert
 token
+key.txt
 
 # Go workspace file
 go.work

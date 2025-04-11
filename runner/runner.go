@@ -1,6 +1,7 @@
 package runner
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"github.com/fatih/color"
@@ -27,6 +28,10 @@ var responseData Response
 var status int
 var currentPage int
 var targetUrl []string // 目标url切片，等下去正则匹配里面的key
+
+// 全局变量和互斥锁
+var processedCount int
+var processedCountMutex sync.Mutex
 
 func Exec() {
 	for _, dork := range Dorks {
@@ -57,6 +62,9 @@ func Exec() {
 	}
 
 	wg.Wait()
+	// 读取key.txt中对每一行，进行去重复
+	_ = removeDuplicatesFromFile("key.txt")
+
 }
 
 func query(dork string, token string) {
@@ -66,20 +74,25 @@ func query(dork string, token string) {
 		if i == responseData.TotalCount/100 {
 			break
 		}
-		// 构造请求，GET参数固定写法
+
+		// 上来就要判断上次的请求是否limit，如果是就换token
 		if status == 403 {
-			color.Red("[!] %s token is limited, change another token", token)
+			color.Red("[error] %s token is limited, change another token", token)
 			token = getToken()
-			color.Red("----------------now token sequence is change to %d----------------", TokenSeq+1)
-			i-- // bug 继续请求当前页
+
+			color.Red("----------------now token sequence is change to %d----------------", TokenSeq)
+			i--        // 还是请求上次页号
+			status = 1 // 要更新status 否则会死循环
 			continue
 		}
+
+		// 构造请求，GET参数固定写法
 		uri, _ := url.Parse("https://api.github.com/search/code")
 
 		param := url.Values{}
 		param.Set("q", dork)
-		param.Set("per_page", strconv.Itoa(100)) //Integer to ASCII
-		param.Set("page", strconv.Itoa(i))       // total_count / 100 ，max = 10
+		param.Set("per_page", strconv.Itoa(100))     // Integer to ASCII
+		param.Set("page", strconv.Itoa(currentPage)) // total_count / 100 ，max = 10
 		uri.RawQuery = param.Encode()
 
 		req, _ := http.NewRequest("GET", uri.String(), nil)
@@ -121,30 +134,45 @@ func query(dork string, token string) {
 
 		// bug 由于风控，可能出现没有item的情况，需要重试
 		if len(responseData.Items) == 0 {
-			color.Red("[!] no items, retry")
+			color.Red("[error] no items, retry")
 			i--
 			continue
 		}
+
 		// Iterate through the items and print each html_url
 		for i, item := range responseData.Items {
 			color.Yellow("共%d页，当前页面：%d\n", responseData.TotalCount/100, currentPage)
 			fmt.Printf("%d: %s\n", i+1, item.HtmlUrl)
 			targetUrl = append(targetUrl, item.HtmlUrl)
 		}
+
+		uniqueUrl := make(map[string]bool)
+		for _, u := range targetUrl {
+			uniqueUrl[u] = true
+		}
+		targetUrl = []string{}
+
+		for u := range uniqueUrl {
+			targetUrl = append(targetUrl, u)
+		}
 	}
 }
 
 func processUrls(urls []string) {
-	total := len(urls)
-	for i, url := range urls {
+	for _, u := range urls {
 		// 打印进度
-		progress := float64(i+1) / float64(total) * 100
-		fmt.Printf("Progress: %.2f%% (%d/%d) - Processing URL: %s\n", progress, i+1, total, url)
+		processedCountMutex.Lock()
+		processedCount++
+		currentProcessedCount := processedCount
+		processedCountMutex.Unlock()
+
+		progress := float64(currentProcessedCount) / float64(len(targetUrl)) * 100
+		fmt.Printf("Progress: %.2f%% (%d/%d) - Processing URL: %s\n", progress, currentProcessedCount, len(targetUrl), u)
 
 		// 使用 http.Get 获取网页内容
-		resp, err := http.Get(url)
+		resp, err := http.Get(u)
 		if err != nil {
-			color.Red("get url error: %v", err)
+			color.Red("get u error: %v", err)
 			continue
 		}
 		defer resp.Body.Close()
@@ -200,4 +228,45 @@ func writeToFile(filename, content string) error {
 	}
 
 	return nil
+}
+
+// removeDuplicatesFromFile 读取文件内容，去除重复行，然后将结果写回文件
+func removeDuplicatesFromFile(filename string) error {
+	// 使用 map 来存储唯一的行
+	uniqueLines := make(map[string]bool)
+
+	// 打开文件进行读取
+	file, err := os.Open(filename)
+	if err != nil {
+		return fmt.Errorf("open file error: %v", err)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() { // 扫描每一行
+		line := scanner.Text()
+		uniqueLines[line] = true
+	}
+
+	if err := scanner.Err(); err != nil {
+		return fmt.Errorf("read file error: %v", err)
+	}
+
+	// 打开文件进行写入（覆盖模式）
+	file, err = os.Create(filename)
+	if err != nil {
+		return fmt.Errorf("create file error: %v", err)
+	}
+	defer file.Close()
+
+	writer := bufio.NewWriter(file)
+	for line := range uniqueLines {
+		_, err := writer.WriteString(line + "\n")
+		if err != nil {
+			return fmt.Errorf("write file error: %v", err)
+		}
+	}
+
+	// 确保所有内容都被写入文件
+	return writer.Flush()
 }
