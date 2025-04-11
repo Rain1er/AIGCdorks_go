@@ -63,7 +63,7 @@ func Exec() {
 
 	wg.Wait()
 	// 读取key.txt中对每一行，进行去重复
-	_ = removeDuplicatesFromFile("key.txt")
+	_ = removeDuplicatesFromFile("key")
 
 }
 
@@ -200,7 +200,7 @@ func processUrls(urls []string) {
 				color.Green("[+] get key: %s", match)
 
 				// 线程安全地写入文件
-				if err := writeToFile("key.txt", match); err != nil {
+				if err := writeToFile("key", match); err != nil {
 					color.Red("write to file error: %v", err)
 				}
 			}

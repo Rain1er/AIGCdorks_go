@@ -15,7 +15,7 @@
 
 # secert
 token
-key.txt
+key
 
 # Go workspace file
 go.work
