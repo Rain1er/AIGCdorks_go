@@ -89,6 +89,7 @@ func CheckOpenRouter(f *os.File) {
 		}
 
 		// 或许这里可以参考前面的实现，在一个goruntime中完成多个http请求，避免创建过过多goruntime
+
 		// 还需要增加openai/gpt-4-turbo-preview的一次调用，判断这个key是否有余额
 	}
 
