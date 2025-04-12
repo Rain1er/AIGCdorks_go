@@ -58,6 +58,7 @@ func CheckOpenRouter(f *os.File) {
 		if i%10 == 0 {
 			time.Sleep(time.Second * 5)
 		}
+		// 或许这里可以参考前面的实现，在一个goruntime中完成多个http请求，避免创建过过多goruntime
 	}
 
 	wg.Wait()
