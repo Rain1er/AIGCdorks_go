@@ -2,6 +2,7 @@ package check
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"github.com/fatih/color"
 	"net/http"
@@ -10,6 +11,22 @@ import (
 	"sync"
 	"time"
 )
+
+// 解析json，如果是试用用户，不要这个key
+type T struct {
+	Data struct {
+		Label             string      `json:"label"`
+		Limit             interface{} `json:"limit"`
+		Usage             float64     `json:"usage"`
+		IsProvisioningKey bool        `json:"is_provisioning_key"`
+		LimitRemaining    interface{} `json:"limit_remaining"`
+		IsFreeTier        bool        `json:"is_free_tier"`
+		RateLimit         struct {
+			Requests int    `json:"requests"`
+			Interval string `json:"interval"`
+		} `json:"rate_limit"`
+	} `json:"data"`
+}
 
 func CheckOpenRouter(f *os.File) {
 	// 从key中读入每一行放到切片中
@@ -47,17 +64,30 @@ func CheckOpenRouter(f *os.File) {
 				color.Red("verify api failed: %v", err)
 				return // 直接结束线程
 			}
+
 			defer resp.Body.Close() // 安全关闭响应体
 
 			// 返回状态码为200表示key有效
 			if resp.StatusCode == http.StatusOK {
-				color.Green(key)
+				var result T
+				err := json.NewDecoder(resp.Body).Decode(&result)
+				if err != nil {
+					color.Red("failed to parse json: %v", err)
+					return
+				}
+
+				// 判断 is_free_tier 字段是否为 false
+				if !result.Data.IsFreeTier {
+					color.Green(key)
+				}
 			}
 		}(lines[i])
+
 		// 这里需要等待设置等待，否则会因为并发量过高导致有些请求失败，引入计数，每10个请求暂停一下
 		if i%10 == 0 {
 			time.Sleep(time.Second * 5)
 		}
+
 		// 或许这里可以参考前面的实现，在一个goruntime中完成多个http请求，避免创建过过多goruntime
 	}
 
