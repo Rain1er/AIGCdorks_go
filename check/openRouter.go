@@ -13,6 +13,8 @@ import (
 )
 
 // 解析json，如果是试用用户，不要这个key
+// 封装 和 解耦。  T 结构体提供了一个顶层的容器，将 data 结构体组织起来。
+// 处理 API 响应的整体结构: API 响应通常不仅仅包含数据 (data)。 它们可能还包含状态码、错误信息、元数据等。
 type T struct {
 	Data struct {
 		Label             string      `json:"label"`
