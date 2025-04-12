@@ -45,9 +45,7 @@ func Menu() {
 	}
 }
 
-/*
-从文件中读取token和dork并放到切片中
-*/
+// 从文件中读取token和dork并放到切片中
 func Parseparam() {
 	// 解析token
 	f, err := os.ReadFile(TokenFile)
@@ -79,9 +77,7 @@ func Parseparam() {
 	color.Blue("[+] got %d tokens and %d dorks\n\n", len(tokens), len(dorks))
 }
 
-/*
-多个token轮询，直到一个token达到限制之后，再切换下一个token。如此循环即可
-*/
+// 多个token轮询，直到一个token达到限制之后，再切换下一个token。如此循环即可
 func updateToken() string {
 	token := Tokens[TokenSeq]
 	TokenSeq += 1

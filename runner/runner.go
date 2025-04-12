@@ -59,7 +59,7 @@ func Exec() {
 	}
 
 	// 分片处理 URL
-	chunkSize := 1 // 每个 goroutine 处理的 URL 数量
+	chunkSize := 1 // 每个 goroutine 处理的 URL 数量，这里感觉有些问题，设为1的话 并发量太高了，有些线程后执行失败！
 	var wg sync.WaitGroup
 
 	for i := 0; i < len(targetUrl); i += chunkSize {

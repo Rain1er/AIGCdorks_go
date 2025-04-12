@@ -7,5 +7,6 @@ import (
 func main() {
 	runner.Menu()
 	runner.Parseparam()
-	runner.Exec()
+	runner.Exec() // 获得apikey
+
 }
