@@ -59,7 +59,8 @@ func Exec() {
 	}
 
 	// 分片处理 URL
-	chunkSize := 1 // 每个 goroutine 处理的 URL 数量，这里感觉有些问题，设为1的话 并发量太高了，有些线程后执行失败！
+	chunkSize := 10 // 每个 goroutine 处理的 URL 数量，这里设置为1肯定有问题，并发量太高了，有些线程会执行失败！
+	// 后面去看下httpx是怎么做的，是在一个goruntime里面请求多个http？
 	var wg sync.WaitGroup
 
 	for i := 0; i < len(targetUrl); i += chunkSize {
