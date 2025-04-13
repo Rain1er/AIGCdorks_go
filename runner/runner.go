@@ -59,28 +59,19 @@ func Exec() {
 	}
 
 	// sharding ProcessingURL
-	chunkSize := 10 // 每个 goroutine 处理的 URL 数量，这里设置为1肯定有问题，并发量太高了，有些线程会执行失败！
-	// 后面去看下httpx是怎么做的，是在一个goruntime里面请求多个http？
 	var wg sync.WaitGroup
 
-	for i := 0; i < len(targetUrl); i += chunkSize {
-		end := i + chunkSize
-		if end > len(targetUrl) {
-			end = len(targetUrl)
-		}
-		urlChunk := targetUrl[i:end]
-
+	for _, u := range targetUrl {
 		wg.Add(1)
-		go func(urls []string) {
+		go func(url string) {
 			defer wg.Done()
-			processUrls(urls)
-		}(urlChunk)
-
+			processUrls(url)
+		}(u)
 	}
 
 	wg.Wait()
 
-	// 读取key.txt中对每一行，进行去重复
+	// Read key.txt to deduplicate each line
 	_ = removeDuplicatesFromFile("key")
 
 }
@@ -176,50 +167,48 @@ func reqAndParse(dork string, token string) {
 	}
 }
 
-func processUrls(urls []string) {
-	for _, u := range urls {
-		// 打印进度
-		processedCountMutex.Lock()
-		processedCount++
-		currentProcessedCount := processedCount
-		processedCountMutex.Unlock()
+func processUrls(url string) {
+	// 打印进度
+	processedCountMutex.Lock()
+	processedCount++
+	currentProcessedCount := processedCount
+	processedCountMutex.Unlock()
 
-		progress := float64(currentProcessedCount) / float64(len(targetUrl)) * 100
-		fmt.Printf("Progress: %.2f%% (%d/%d) - Processing URL: %s\n", progress, currentProcessedCount, len(targetUrl), u)
+	progress := float64(currentProcessedCount) / float64(len(targetUrl)) * 100
+	fmt.Printf("Progress: %.2f%% (%d/%d) - Processing URL: %s\n", progress, currentProcessedCount, len(targetUrl), url)
 
-		// 使用 http.Get 获取网页内容
-		resp, err := http.Get(u)
-		if err != nil {
-			color.Red("get u error: %v", err)
-			continue
+	// 使用 http.Get 获取网页内容
+	resp, err := http.Get(url)
+	if err != nil {
+		color.Red("get url error: %v", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	// 读取网页内容
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		color.Red("read body error: %v", err)
+		return
+	}
+
+	// 检查 HTTP 状态码
+	if resp.StatusCode == 200 {
+		// 使用正则匹配 sk-or-v1-[a-z0-9]{64}
+		re := regexp.MustCompile(`sk-or-v1-[a-z0-9]{64}`) // todo 匹配AGIC的顺序，因为api搜索似乎不支持正则
+		matches := re.FindAllString(string(body), -1)     // 查找所有匹配项
+
+		// 使用 map 去重
+		uniqueMatches := make(map[string]bool)
+		for _, match := range matches {
+			uniqueMatches[match] = true
 		}
-		defer resp.Body.Close()
 
-		// 读取网页内容
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			color.Red("read body error: %v", err)
-			continue
-		}
+		for match := range uniqueMatches {
+			color.Green("[+] get key: %s", match)
 
-		// 检查 HTTP 状态码
-		if resp.StatusCode == 200 {
-			// 使用正则匹配 sk-or-v1-[a-z0-9]{64}
-			re := regexp.MustCompile(`sk-or-v1-[a-z0-9]{64}`) // todo 匹配AGIC的顺序，因为api搜索似乎不支持正则
-			matches := re.FindAllString(string(body), -1)     // 查找所有匹配项
-
-			// 使用 map 去重
-			uniqueMatches := make(map[string]bool)
-			for _, match := range matches {
-				uniqueMatches[match] = true
-			}
-
-			for match := range uniqueMatches {
-				color.Green("[+] get key: %s", match)
-
-				// 修改：将匹配结果写入通道
-				matchChan <- match
-			}
+			// 修改：将匹配结果写入通道
+			matchChan <- match
 		}
 	}
 }

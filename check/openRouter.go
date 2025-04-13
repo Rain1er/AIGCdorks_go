@@ -40,7 +40,7 @@ func CheckOpenRouter(f *os.File) {
 	}
 
 	// 1. 验证key是否有效
-	var wg sync.WaitGroup
+	var wg sync.WaitGroup // todo: 这里要想办法达到最大goroutine时阻塞，避免创建过多协程
 	for i := 0; i < len(lines); i++ {
 		wg.Add(1)
 		go func(key string) {
