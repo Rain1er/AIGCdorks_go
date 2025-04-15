@@ -18,6 +18,7 @@ wg, _ := syncutil.New(syncutil.WithSize(r.options.Threads))
 
 
 todo
-1. 完成多个apikey的收集
+1. 完成多个apikey的收集(整合各类api的调用，流式输出)
 2. 分别验证apikey的有效性
 3. 结合openrouter实现调用的负载均衡
+4. 寻找更多api供应商
