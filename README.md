@@ -15,3 +15,9 @@ httpx中的相关代码
 wg, _ := syncutil.New(syncutil.WithSize(r.options.Threads))
 ```
 2. go多线程编程中若涉及到routine通信，则需要使用channel.尽量不要使用内存通信，因为内存通信会消耗大量内存，而channel则不会
+
+
+todo
+1. 完成多个apikey的收集
+2. 分别验证apikey的有效性
+3. 结合openrouter实现调用的负载均衡

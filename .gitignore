@@ -14,8 +14,8 @@
 .idea
 
 # secert
-token
-key
+source/token
+source/key
 
 # Go workspace file
 go.work
