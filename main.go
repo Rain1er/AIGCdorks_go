@@ -8,5 +8,4 @@ func main() {
 	runner.Menu()
 	runner.Parseparam()
 	runner.Exec() // 获得apikey
-
 }
