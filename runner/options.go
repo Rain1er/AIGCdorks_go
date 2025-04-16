@@ -46,7 +46,7 @@ func Menu() {
 }
 
 // 从文件中读取token和dork并放到切片中
-func Parseparam() {
+func ParseParam() {
 	// 解析token
 	f, err := os.ReadFile(TokenFile)
 	if err != nil {

@@ -6,6 +6,6 @@ import (
 
 func main() {
 	runner.Menu()
-	runner.Parseparam()
+	runner.ParseParam()
 	runner.Exec() // 获得apikey
 }

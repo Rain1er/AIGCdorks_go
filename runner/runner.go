@@ -50,8 +50,9 @@ func init() {
 
 func Exec() {
 	for _, dork := range Dorks {
-		token := updateToken()
+		token := updateToken() // 得到第一个token
 		if Target != "" {
+			// 指定目标域的搜索
 			reqAndParse(fmt.Sprintf("%s %s", Target, dork), token)
 		} else {
 			reqAndParse(dork, token) // no target ,only use dork
@@ -59,7 +60,7 @@ func Exec() {
 	}
 
 	// sharding ProcessingURL
-	var wg sync.WaitGroup
+	var wg sync.WaitGroup // todo 设置最大并发，避免创建过多协程
 
 	for _, u := range targetUrl {
 		wg.Add(1)
@@ -77,12 +78,17 @@ func Exec() {
 }
 
 func reqAndParse(dork string, token string) {
-
+	firstIn := true
 	for i := 1; i <= 10; i++ {
 		currentPage = i
-		if i == responseData.TotalCount/100 {
-			break
+		// 不是第一次循环，那么需要判断页数
+		if !firstIn {
+			// 如果只有128项呢？应该获取第1 2页才对
+			if responseData.TotalCount-100*(i-1) <= 0 {
+				break
+			}
 		}
+		firstIn = false
 
 		// 上来就要判断上次的请求是否limit，如果是就换token
 		if status == 403 {
@@ -99,7 +105,7 @@ func reqAndParse(dork string, token string) {
 		uri, _ := url.Parse("https://api.github.com/search/code")
 
 		param := url.Values{}
-		param.Set("q", dork+" language:ts")          // todo 增加各种语言分类，破解1000条结果限制
+		param.Set("q", dork+" language:ts")          // todo 增加各种语言分类，减少检索结果，从而绕过1000条结果限制
 		param.Set("per_page", strconv.Itoa(100))     // Integer to ASCII
 		param.Set("page", strconv.Itoa(currentPage)) // total_count / 100 ，max = 10
 		uri.RawQuery = param.Encode()
@@ -117,7 +123,7 @@ func reqAndParse(dork string, token string) {
 		}
 		Client := http.Client{
 			Transport: transport,
-			Timeout:   30 * time.Second, // 例如：设置 30 秒的总超时
+			Timeout:   10 * time.Second, // 设置 10 秒的总超时
 		}
 		resp, err := Client.Do(req)
 		if err != nil {
@@ -165,6 +171,7 @@ func reqAndParse(dork string, token string) {
 			targetUrl = append(targetUrl, u)
 		}
 	}
+
 }
 
 func processUrls(url string) {
