@@ -5,10 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fatih/color"
+	syncutil "github.com/projectdiscovery/utils/sync"
 	"net/http"
 	"net/url"
 	"os"
-	"sync"
 	"time"
 )
 
@@ -40,9 +40,10 @@ func CheckOpenRouter(f *os.File) {
 	}
 
 	// 1. 验证key是否有效
-	var wg sync.WaitGroup // todo: 这里要想办法达到最大goroutine时阻塞，避免创建过多协程
+	wg, _ := syncutil.New(syncutil.WithSize(50))
+
 	for i := 0; i < len(lines); i++ {
-		wg.Add(1)
+		wg.Add()
 		go func(key string) {
 			defer wg.Done() // 确保 wg.Done() 在 goroutine 结束时调用
 
