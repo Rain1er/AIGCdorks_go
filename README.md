@@ -22,7 +22,7 @@ wg, _ := syncutil.New(syncutil.WithSize(r.options.Threads))
 1. bugs 修正分页的逻辑--使用flag标记是否第一次进入循环，感觉比do while好用，在循环开始就判断已检索的数量
 2. 收集好了各种api的dork并整理成yaml格式
 3. 使用PD库设置最大goroutine并发量
-
+4. 研究发现api搜索结果会比网页结果少，并且有时可以忽略sk-，直接搜索URL然后正则即可
 todo
 1. 完成多个apikey的收集(整合各类api的调用，流式输出)
 2. 分别验证apikey的有效性
