@@ -75,7 +75,6 @@ func Exec() {
 
 	// Read key.txt to deduplicate each line
 	_ = removeDuplicatesFromFile("./source/key")
-
 }
 
 func reqAndParse(dork string, token string) {
