@@ -19,10 +19,9 @@ wg, _ := syncutil.New(syncutil.WithSize(r.options.Threads))
 
 
 ## 2025-4-16
-bugs
-修正分页的逻辑
-1. 使用flag标记是否第一次进入循环，感觉比do while好用
-2. 在循环开始就判断已检索的数量
+1. bugs 修正分页的逻辑--使用flag标记是否第一次进入循环，感觉比do while好用，在循环开始就判断已检索的数量
+2. 收集好了各种api的dork并整理成yaml格式
+3. 使用PD库设置最大goroutine并发量
 
 todo
 1. 完成多个apikey的收集(整合各类api的调用，流式输出)

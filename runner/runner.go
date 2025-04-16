@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fatih/color"
+	syncutil "github.com/projectdiscovery/utils/sync"
 	"io"
 	"net/http"
 	"net/url"
@@ -41,7 +42,7 @@ func init() {
 	// 新增：启动一个 goroutine 用于从通道中读取数据并写入文件
 	go func() {
 		for match := range matchChan {
-			if err := writeToFile("key", match); err != nil {
+			if err := writeToFile("./source/key", match); err != nil {
 				color.Red("write to file error: %v", err)
 			}
 		}
@@ -59,11 +60,11 @@ func Exec() {
 		}
 	}
 
-	// sharding ProcessingURL
-	var wg sync.WaitGroup // todo 设置最大并发，避免创建过多协程
+	// sharding ProcessingURL,设置最大并发
+	wg, _ := syncutil.New(syncutil.WithSize(Threads))
 
 	for _, u := range targetUrl {
-		wg.Add(1)
+		wg.Add()
 		go func(url string) {
 			defer wg.Done()
 			processUrls(url)
@@ -73,7 +74,7 @@ func Exec() {
 	wg.Wait()
 
 	// Read key.txt to deduplicate each line
-	_ = removeDuplicatesFromFile("key")
+	_ = removeDuplicatesFromFile("./source/key")
 
 }
 
@@ -105,7 +106,7 @@ func reqAndParse(dork string, token string) {
 		uri, _ := url.Parse("https://api.github.com/search/code")
 
 		param := url.Values{}
-		param.Set("q", dork+" language:ts")          // todo 增加各种语言分类，减少检索结果，从而绕过1000条结果限制
+		param.Set("q", dork)                         // todo 增加各种语言分类，减少检索结果，从而绕过1000条结果限制
 		param.Set("per_page", strconv.Itoa(100))     // Integer to ASCII
 		param.Set("page", strconv.Itoa(currentPage)) // total_count / 100 ，max = 10
 		uri.RawQuery = param.Encode()
@@ -116,7 +117,7 @@ func reqAndParse(dork string, token string) {
 		req.Header.Set("X-GitHub-Api-Version", "2022-11-28")
 
 		// sent request
-		proxyURL, _ := url.Parse("http://127.0.0.1:7890")
+		proxyURL, _ := url.Parse("http://127.0.0.1:8080")
 
 		transport := &http.Transport{
 			Proxy: http.ProxyURL(proxyURL),
@@ -156,7 +157,7 @@ func reqAndParse(dork string, token string) {
 
 		// Iterate through the items and print each html_url
 		for i, item := range responseData.Items {
-			color.Yellow("共%d页，当前页面：%d\n", responseData.TotalCount/100, currentPage)
+			color.Yellow("共%d页，当前页面：%d\n", responseData.TotalCount/100+1, currentPage)
 			fmt.Printf("%d: %s\n", i+1, item.HtmlUrl)
 			targetUrl = append(targetUrl, item.HtmlUrl)
 		}
@@ -202,8 +203,8 @@ func processUrls(url string) {
 	// 检查 HTTP 状态码
 	if resp.StatusCode == 200 {
 		// 使用正则匹配 sk-or-v1-[a-z0-9]{64}
-		re := regexp.MustCompile(`sk-or-v1-[a-z0-9]{64}`) // todo 匹配AGIC的顺序，因为api搜索似乎不支持正则
-		matches := re.FindAllString(string(body), -1)     // 查找所有匹配项
+		re := regexp.MustCompile(`sk-[a-zA-Z0-9]{48}`) // todo 匹配AGIC的顺序，因为api搜索似乎不支持正则
+		matches := re.FindAllString(string(body), -1)  // 查找所有匹配项
 
 		// 使用 map 去重
 		uniqueMatches := make(map[string]bool)

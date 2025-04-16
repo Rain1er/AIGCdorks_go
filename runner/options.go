@@ -15,6 +15,7 @@ var Target string
 var DorkFile string
 var TokenFile string
 var Delay int64
+var Threads int
 
 // 所有token和dork
 var Tokens []string
@@ -24,8 +25,9 @@ var TokenSeq = 0
 func Menu() {
 	flag.StringVar(&TokenFile, "tf", "", "github personal access token file")
 	flag.StringVar(&DorkFile, "df", "", "github dorks file path")
-	flag.StringVar(&Target, "t", "", "target which search in github")
+	flag.StringVar(&Target, "u", "", "target which search in github")
 	flag.Int64Var(&Delay, "d", 10, "how many seconds does it wait each time")
+	flag.IntVar(&Threads, "t", 50, "the max request threads")
 
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), "Usage of %s:\n", os.Args[0])
