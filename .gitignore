@@ -16,6 +16,7 @@
 # secert
 source/token
 source/key
+Dorks/*
 
 # Go workspace file
 go.work
