@@ -4,373 +4,482 @@ scan-cohere-keys:
   model: command-r-plus
   dork: https://api.cohere.ai AND /Bearer [a-zA-Z0-9]{40}/
   regex: [a-zA-Z0-9]{40}
+  query: '"https://api.cohere.ai" AND "Bearer"'
+
 scan-deepseek-keys:
   name: deepseek
   website: https://api.deepseek.com
   model: deepseek-chat
   dork: deepseek AND /sk-[a-z0-9]{12}4[a-z0-9]{19}/
   regex: sk-[a-z0-9]{12}4[a-z0-9]{19}
+  query: 'deepseek AND "sk-"'
+
 scan-fireworks-keys:
   name: fireworks
   website: https://api.fireworks.ai/inference
   model: accounts/fireworks/models/mixtral-8x7b-instruct
   dork: https://api.fireworks.ai/inference AND /[a-zA-Z0-9]{48}/
   regex: [a-zA-Z0-9]{48}
+
+
 scan-grok-keys:
   name: grok
   website: https://api.x.ai
   model: grok-2-1212
   dork: https://api.x.ai/v1 AND xai-
   regex: xai-[a-zA-Z0-9]{80}
+  query: '"https://api.x.ai/v1" AND "xai-"'
+
 scan-groq-keys:
   name: groq
   website: https://api.groq.com/openai
   model: llama3-8b-8192
   dork: WGdyb3FY
   regex: gsk_[a-zA-Z0-9]{20}WGdyb3FY[a-zA-Z0-9]{24}
+  query: '"WGdyb3FY" OR "gsk_"'
+
 scan-huggingface-keys:
   name: huggingface
   website: https://api-inference.huggingface.co
   model: meta-llama/Meta-Llama-3-8B-Instruct
   dork: https://api-inference.huggingface.co AND /hf_[a-zA-Z]{34}/
   regex: hf_[a-zA-Z]{34}
+  query: '"https://api-inference.huggingface.co" AND "hf_"'
+
 scan-lingyiwanwu-keys:
   name: lingyiwanwu
   website: https://api.lingyiwanwu.com
   model: yi-large
   dork: https://api.lingyiwanwu.com AND /(?-i)[a-z0-9]{32}/
   regex: [a-z0-9]{32}
+
+
 scan-llama-keys:
   name: llama
   website: https://api.llama-api.com/chat/completions
   model: llama3.1-70b
   dork: https://api.llama-api.com AND (LL- OR LA-)
   regex: L[LA]-[a-zA-Z0-9]{64}
+  query: '"https://api.llama-api.com" AND ("LL-" OR "LA-")'
+
 scan-mistral-keys:
   name: mistral
   website: https://api.mistral.ai
   model: mistral-large-latest
   dork: https://api.mistral.ai AND (/Bearer [a-zA-Z0-9]{32}/ OR /MISTRAL_API_KEY(\s+)?=(\s+)?[']?[a-zA-Z0-9]{32}[']?/)
   regex: Bearer ([a-zA-Z0-9]{32})|MISTRAL_API_KEY(?:\s+)?=(?:\s+)?[']?([a-zA-Z0-9]{32})[']?
+  query: '"https://api.mistral.ai" AND ("Bearer" OR "MISTRAL_API_KEY=")'
+
 scan-moonshot-keys:
   name: moonshot
   website: https://api.moonshot.cn
   model: moonshot-v1-8k
   dork: /sk-[a-zA-Z0-9]{48}/ AND https://api.moonshot.cn/v1
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.moonshot.cn/v1" AND "sk-"'
+
 scan-openrouter-keys:
   name: openrouter
   website: https://openrouter.ai/api
   model: qwen/qwen-2.5-coder-32b-instruct
   dork: sk-or-v1-[a-z0-9]{64}
   regex: sk-or-v1-[a-z0-9]{64}
+  query: '"sk-or-v1-"'
+
 scan-qwen-keys:
   name: qwen
   website: https://dashscope.aliyuncs.com/compatible-mode/v1/models
   model: qwen-plus
   dork: https://dashscope.aliyuncs.com/compatible-mode/v1 AND /sk-[a-z0-9]{32}/
   regex: sk-[a-z0-9]{32}
+  query: '"dashscope.aliyuncs.com/compatible-mode/v1" AND "sk-"'
+
 scan-siliconflow-keys:
   name: siliconflow
   website: https://api.siliconflow.cn
   model: deepseek-ai/DeepSeek-V2.5
   dork: https://api.siliconflow.cn/v1 AND sk-
   regex: sk-[a-z]{48}
+  query: '"https://api.siliconflow.cn/v1" AND "sk-"'
+
 scan-xfspark-keys:
   name: xfspark
   website: https://spark-api-open.xf-yun.com
   model: generalv3.5
   dork: https://spark-api-open.xf-yun.com AND /[a-zA-Z0-9]{20}:[a-zA-Z0-9]{20}/
   regex: [a-zA-Z0-9]{20}:[a-zA-Z0-9]{20}
+
 scan-zhipuai-keys:
   name: zhipuai
   website: https://open.bigmodel.cn/api/paas/v4/chat/completions
   model: glm-4-plus
   dork: https://open.bigmodel.cn/api/paas AND /[a-z0-9]{32}\.[a-zA-Z0-9]{16}/
   regex: [a-z0-9]{32}\.[a-zA-Z0-9]{16}
+
 scan-ai98vip-keys:
   name: ai98vip
   website: https://ai98.vip
   model: gpt-4o
   dork: https://ai98.vip AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://ai98.vip" AND "sk-"'
+
 scan-aicnn-keys:
   name: aicnn
   website: https://api.aicnn.cn
   model: gpt-4o
   dork: https://api.aicnn.cn AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.aicnn.cn" AND "sk-"'
+
 scan-aigc369-keys:
   name: aigc369
   website: https://api.aigc369.com
   model: gpt-4o
   dork: https://api.aigc369.com AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.aigc369.com" AND "sk-"'
+
 scan-aigcbest-keys:
   name: aigcbest
   website: https://api2.aigcbest.top
   model: gpt-4o
-  dork: (https://api2.aigcbest.top OR https://api.aigcbest.top OR https://fast.chat.t4wefan.pub)
-    AND /sk-[a-zA-Z0-9]{48}/
+  dork: (https://api2.aigcbest.top OR https://api.aigcbest.top OR https://fast.chat.t4wefan.pub) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api2.aigcbest.top" OR "api.aigcbest.top" OR "fast.chat.t4wefan.pub") AND "sk-"'
+
 scan-aigcxseecn-keys:
   name: aigcxseecn
   website: https://aigc.x-see.cn
   model: gpt-4o
-  dork: (https://aigc.x-see.cn OR https://open.zark.in OR https://open.xiaojingai.com)
-    AND /sk-[a-zA-Z0-9]{48}/
+  dork: (https://aigc.x-see.cn OR https://open.zark.in OR https://open.xiaojingai.com) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("aigc.x-see.cn" OR "open.zark.in" OR "open.xiaojingai.com") AND "sk-"'
+
 scan-aihubmix-keys:
   name: aihubmix
   website: https://aihubmix.com
   model: gpt-4o
   dork: https://aihubmix.com AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://aihubmix.com" AND "sk-"'
+
 scan-aiporters-keys:
   name: aiporters
   website: https://one-api.aiporters.com
   model: gpt-4o
   dork: https://one-api.aiporters.com AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"one-api.aiporters.com" AND "sk-"'
+
 scan-aiproxyio-keys:
   name: aiproxyio
   website: https://api.aiproxy.io
   model: gpt-4o
   dork: https://api.aiproxy.io AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.aiproxy.io" AND "sk-"'
+
 scan-aiyydscom-keys:
   name: aiyydscom
   website: https://ai-yyds.com
   model: gpt-4o
   dork: https://ai-yyds.com AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://ai-yyds.com" AND "sk-"'
+
 scan-apiyicom-keys:
   name: apiyicom
   website: https://api.apiyi.com
   model: gpt-4o
   dork: https://api.apiyi.com AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.apiyi.com" AND "sk-"'
+
 scan-api302ai-keys:
   name: api302ai
   website: https://api.302.ai
   model: gpt-4o
   dork: https://api.302.ai AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.302.ai" AND "sk-"'
+
 scan-bianxieai-keys:
   name: bianxieai
   website: https://api.bianxie.ai
   model: gpt-4o
-  dork: (https://api.bianxie.ai OR https://api.bianxieai.com OR https://api.a8.hk)
-    AND /sk-[a-zA-Z0-9]{48}/
+  dork: (https://api.bianxie.ai OR https://api.bianxieai.com OR https://api.a8.hk) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api.bianxie.ai" OR "api.bianxieai.com" OR "api.a8.hk") AND "sk-"'
+
 scan-bltcy-keys:
   name: bltcy
   website: https://one-api.bltcy.top
   model: gpt-4o
   dork: (https://one-api.bltcy.top OR https://api.bltcy.ai) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("one-api.bltcy.top" OR "api.bltcy.ai") AND "sk-"'
+
 scan-burnhair-keys:
   name: burnhair
   website: https://burn.hair
   model: gpt-4o
   dork: https://burn.hair AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://burn.hair" AND "sk-"'
+
 scan-cerebrasai-keys:
   name: cerebrasai
   website: https://api.cerebras.ai
   model: llama3.1-70b
   dork: https://api.cerebras.ai AND /csk-[a-zA-Z0-9]{48}/
   regex: csk-[a-zA-Z0-9]{48}
+  query: '"https://api.cerebras.ai" AND "csk-"'
+
 scan-chatanywhere-keys:
   name: chatanywhere
   website: https://api.chatanywhere.tech
   model: gpt-4o
-  dork: (https://api.chatanywhere.tech OR https://api.chatanywhere.org OR https://api.chatanywhere.com.cn)
-    AND sk-
+  dork: (https://api.chatanywhere.tech OR https://api.chatanywhere.org OR https://api.chatanywhere.com.cn) AND sk-
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api.chatanywhere.tech" OR "api.chatanywhere.org" OR "api.chatanywhere.com.cn") AND "sk-"'
+
 scan-closeaiasia-keys:
   name: closeaiasia
   website: https://api.openai-proxy.org
   model: gpt-4o
-  dork: (https://api.openai-proxy.org OR https://api.closeai-proxy.xyz OR https://api.openai-proxy.live
-    OR https://api.closeai-asia.com) AND /sk-[a-zA-Z0-9]{48}/
+  dork: (https://api.openai-proxy.org OR https://api.closeai-proxy.xyz OR https://api.openai-proxy.live OR https://api.closeai-asia.com) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api.openai-proxy.org" OR "api.closeai-proxy.xyz" OR "api.openai-proxy.live" OR "api.closeai-asia.com") AND "sk-"'
+
 scan-deepbricks-keys:
   name: deepbricks
   website: https://api.deepbricks.ai
   model: gpt-4o
   dork: https://api.deepbricks.ai AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.deepbricks.ai" AND "sk-"'
+
 scan-dkwvipcn-keys:
   name: dkwvipcn
   website: https://api.132999.xyz
   model: gpt-4o
   dork: https://api.132999.xyz AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.132999.xyz" AND "sk-"'
+
 scan-ephoneai-keys:
   name: ephoneai
   website: https://api.ephone.ai
   model: gpt-4o
   dork: (https://api.ephone.ai OR https://api.ephone.chat) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api.ephone.ai" OR "api.ephone.chat") AND "sk-"'
+
 scan-fe8cn-keys:
   name: fe8cn
   website: https://api.fe8.cn
   model: gpt-4o
   dork: https://api.fe8.cn AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.fe8.cn" AND "sk-"'
+
 scan-gptapius-keys:
   name: gptapius
   website: https://api.gptapi.us
   model: gpt-4o
   dork: https://api.gptapi.us AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.gptapi.us" AND "sk-"'
+
 scan-gptge-keys:
   name: gptge
   website: https://api.gpt.ge
   model: gpt-4o
-  dork: (https://api.gpt.ge OR https://api.v3.cm OR https://api.vveai.com OR https://api.v36.cm
-    OR https://run.v36.cm OR https://cf.v36.cm) AND /sk-[a-zA-Z0-9]{48}/
+  dork: (https://api.gpt.ge OR https://api.v3.cm OR https://api.vveai.com OR https://api.v36.cm OR https://run.v36.cm OR https://cf.v36.cm) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api.gpt.ge" OR "api.v3.cm" OR "api.vveai.com" OR "api.v36.cm" OR "run.v36.cm" OR "cf.v36.cm") AND "sk-"'
+
 scan-gptsapinet-keys:
   name: gptsapinet
   website: https://api.gptsapi.net
   model: gpt-4o
   dork: https://api.gptsapi.net AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.gptsapi.net" AND "sk-"'
+
 scan-gptsvin-keys:
   name: gptsvin
   website: https://api.gpts.vin
   model: gpt-4o
   dork: https://api.gpts.vin AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.gpts.vin" AND "sk-"'
+
 scan-holdaitop-keys:
   name: holdaitop
   website: https://api.holdai.top
   model: gpt-4o
   dork: https://api.holdai.top AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.holdai.top" AND "sk-"'
+
 scan-hub2one-keys:
   name: hub2one
   website: https://hub2.one
   model: gpt-4o
   dork: https://hub2.one AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://hub2.one" AND "sk-"'
+
 scan-kuaiwenwen-keys:
   name: kuaiwenwen
   website: https://api.kwwai.top
   model: gpt-4o
-  dork: (https://api.kwwai.top OR https://api.kuaiwenwen.top OR https://api.ainstant.pro)
-    AND /sk-[a-zA-Z0-9]{48}/
+  dork: (https://api.kwwai.top OR https://api.kuaiwenwen.top OR https://api.ainstant.pro) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api.kwwai.top" OR "api.kuaiwenwen.top" OR "api.ainstant.pro") AND "sk-"'
+
 scan-oaipro-keys:
   name: oaipro
   website: https://api.oaipro.com
   model: gpt-4o
   dork: https://api.oaipro.com AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.oaipro.com" AND "sk-"'
+
 scan-ohmygpt-keys:
   name: ohmygpt
   website: https://api.ohmygpt.com
   model: gpt-4o
-  dork: (https://api.ohmygpt.com OR https://cfcus02.opapi.win OR https://cfwus02.opapi.win
-    OR https://c-z0-api-01.hash070.com OR https://www.aigptx.top OR https://cn2us02.opapi.win)
-    AND /sk-[a-zA-Z0-9]{48}/
+  dork: (https://api.ohmygpt.com OR https://cfcus02.opapi.win OR https://cfwus02.opapi.win OR https://c-z0-api-01.hash070.com OR https://www.aigptx.top OR https://cn2us02.opapi.win) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api.ohmygpt.com" OR "cfcus02.opapi.win" OR "cfwus02.opapi.win" OR "c-z0-api-01.hash070.com" OR "www.aigptx.top" OR "cn2us02.opapi.win") AND "sk-"'
+
 scan-onechats-keys:
   name: onechats
   website: https://chatapi.onechats.top
   model: gpt-4o
   dork: (https://chatapi.onechats.top OR https://api.onechats.cn) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("chatapi.onechats.top" OR "api.onechats.cn") AND "sk-"'
+
 scan-openaihk-keys:
   name: openaihk
   website: https://api.openai-hk.com
   model: gpt-4o
   dork: https://api.openai-hk.com AND /hk-[a-zA-Z0-9]{48}/
   regex: hk-[a-zA-Z0-9]{48}
+  query: '"https://api.openai-hk.com" AND "hk-"'
+
 scan-openaihub-keys:
   name: openaihub
   website: https://api.openai-hub.com
   model: gpt-4o
   dork: https://api.openai-hub.com AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.openai-hub.com" AND "sk-"'
+
 scan-openkeycloud-keys:
   name: openkeycloud
   website: https://openkey.cloud
   model: gpt-4o
   dork: https://openkey.cloud AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://openkey.cloud" AND "sk-"'
+
 scan-opentyphoonai-keys:
   name: opentyphoonai
   website: https://api.opentyphoon.ai
   model: typhoon-v1.5x-70b-instruct
   dork: https://api.opentyphoon.ai AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.opentyphoon.ai" AND "sk-"'
+
 scan-rcouyi-keys:
   name: rcouyi
   website: https://api.rcouyi.com
   model: gpt-4o
   dork: https://api.rcouyi.com AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.rcouyi.com" AND "sk-"'
+
 scan-proaiskt-keys:
   name: proaiskt
   website: https://pro.aiskt.com
   model: gpt-4o
   dork: https://pro.aiskt.com AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://pro.aiskt.com" AND "sk-"'
+
 scan-redpillai-keys:
   name: redpillai
   website: https://api.red-pill.ai
   model: gpt-4o
   dork: https://api.red-pill.ai AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.red-pill.ai" AND "sk-"'
+
 scan-shubiaobiaocn-keys:
   name: shubiaobiaocn
   website: https://api.shubiaobiao.cn
   model: gpt-4o
   dork: (https://api.ai-gaochao.cn OR https://api.shubiaobiao.cn) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api.ai-gaochao.cn" OR "api.shubiaobiao.cn") AND "sk-"'
+
 scan-togetherxyz-keys:
   name: togetherxyz
   website: https://api.together.xyz
   model: meta-llama/Llama-3.3-70B-Instruct-Turbo
-  dork: https://api.together.xyz AND /(?-i)[^:][a-z0-9]{64}/ AND (apikey OR api_token
-    OR Bearer  OR /api_key[:=]/ OR /api_key\s/)
+  dork: https://api.together.xyz AND /(?-i)[^:][a-z0-9]{64}/ AND (apikey OR api_token OR Bearer OR /api_key[:=]/ OR /api_key\s/)
   regex: [a-z0-9]{64}
+  query: '"https://api.together.xyz" AND ("apikey" OR "api_token" OR "Bearer" OR "api_key:" OR "api_key=")'
+
 scan-wenwenai-keys:
   name: wenwenai
   website: https://key.wenwen-ai.com
   model: gpt-4o
   dork: https://key.wenwen-ai.com AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"key.wenwen-ai.com" AND "sk-"'
+
 scan-xiaicn-keys:
   name: xiaicn
   website: https://api.xi-ai.cn
   model: gpt-4o
   dork: https://api.xi-ai.cn AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '"https://api.xi-ai.cn" AND "sk-"'
+
 scan-xiaoaiplus-keys:
   name: xiaoaiplus
   website: https://xiaoai.plus
   model: gpt-4o
   dork: (https://xiaoai.plus OR https://api.xiaoai.plus) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("xiaoai.plus" OR "api.xiaoai.plus") AND "sk-"'
+
 scan-xtyapp-keys:
   name: xtyapp
   website: https://api.xty.app
   model: gpt-4o
   dork: (https://api.xty.app OR https://hk.xty.app) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api.xty.app" OR "hk.xty.app") AND "sk-"'
+
 scan-yunwuai-keys:
   name: yunwuai
   website: https://yunwu.ai
   model: gpt-4o
   dork: (https://yunwu.ai OR https://api.wlai.vip) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("yunwu.ai" OR "api.wlai.vip") AND "sk-"'
+
 scan-zhizengzeng-keys:
   name: zhizengzeng
   website: https://api.zhizengzeng.com
   model: gpt-4o
   dork: (https://api.zhizengzeng.com OR https://flag.smarttrot.com) AND /sk-[a-zA-Z0-9]{48}/
   regex: sk-[a-zA-Z0-9]{48}
+  query: '("api.zhizengzeng.com" OR "flag.smarttrot.com") AND "sk-"'
