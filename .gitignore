@@ -17,6 +17,7 @@
 source/token
 source/key
 Dorks/dork.yaml
+Dorks/agic
 
 
 # Go workspace file
