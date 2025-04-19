@@ -32,7 +32,7 @@ type T struct {
 
 func CheckOpenRouter(f *os.File) {
 	// 从key中读入每一行放到切片中
-	// todo 并发场景使用channel可能会更好？不需要单独对切片进行分片操作了
+	// 简单读取场景不需要使用channel，这里不涉及到进程通信
 	var lines []string
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
