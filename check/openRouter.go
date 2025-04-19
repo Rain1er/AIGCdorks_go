@@ -52,7 +52,7 @@ func CheckOpenRouter(f *os.File) {
 			req, _ := http.NewRequest("GET", uri.String(), nil)
 			req.Header.Set("Authorization", fmt.Sprintf("Bearer %s", key)) // 每个 goroutine 使用独立的 req
 
-			// 设置代理和超时
+			// 设置代理和超时，可查看http请求，用于调试等
 			proxyURL, _ := url.Parse("http://127.0.0.1:8080")
 			transport := &http.Transport{
 				Proxy: http.ProxyURL(proxyURL),
