@@ -40,7 +40,7 @@ func CheckOpenRouter(f *os.File) {
 	}
 
 	// 1. 验证key是否有效
-	wg, _ := syncutil.New(syncutil.WithSize(50))
+	wg, _ := syncutil.New(syncutil.WithSize(50)) // pd封装好的库，可以直接指定并发量
 
 	for i := 0; i < len(lines); i++ {
 		wg.Add()
