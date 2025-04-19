@@ -22,7 +22,6 @@ func Check302AI(f *os.File) {
 	// 1. 验证key是否有效
 	wg, _ := syncutil.New(syncutil.WithSize(50))
 
-	// todo 可以优化成channel
 	for i := 0; i < len(lines); i++ {
 		wg.Add()
 		go func(key string) {
@@ -52,7 +51,7 @@ func Check302AI(f *os.File) {
 
 			defer resp.Body.Close() // 安全关闭响应体
 
-			// 返回状态码为200表示key有效
+			// 懒得查api手册了，用burp抓了下503直接对应key有效
 			if resp.StatusCode == 503 {
 				color.Green(key)
 
